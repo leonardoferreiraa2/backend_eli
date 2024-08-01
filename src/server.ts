@@ -12,6 +12,20 @@ app.get('/salas', async () => {
     return { salas }
 })
 
+app.get('/salas/:id', async (request, reply) => {
+    const { id } = request.params as { id: string }
+
+    const sala = await prisma.sala.findUnique({
+        where: { id }
+    })
+
+    if (!sala) {
+        return reply.status(404).send({ error: 'Sala not found' })
+    }
+
+    return { sala }
+})
+
 app.post('/salas', async (request, reply) => {
     const createSalaSchema = z.object({
         titulo: z.string(), 
