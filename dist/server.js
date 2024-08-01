@@ -32,6 +32,16 @@ app.get("/salas", async () => {
   const salas = await prisma.sala.findMany();
   return { salas };
 });
+app.get("/salas/:id", async (request, reply) => {
+  const { id } = request.params;
+  const sala = await prisma.sala.findUnique({
+    where: { id }
+  });
+  if (!sala) {
+    return reply.status(404).send({ error: `id not found: ${id}` });
+  }
+  return { sala };
+});
 app.post("/salas", async (request, reply) => {
   const createSalaSchema = import_zod.z.object({
     titulo: import_zod.z.string(),
