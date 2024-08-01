@@ -20,7 +20,7 @@ app.get('/salas/:id', async (request, reply) => {
     })
 
     if (!sala) {
-        return reply.status(404).send({ error: 'Sala not found' })
+        return reply.status(404).send({ error: `id not found: ${id}` })
     }
 
     return { sala }
