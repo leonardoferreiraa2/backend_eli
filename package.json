@@ -9,7 +9,7 @@
     "dev": "tsx src/server.ts",
     "build": "prisma generate && tsup src",
     "start": "node dist/server.js",
-    "prisma-build": "npx prisma migrate deploy"
+    "vercel-build": "npx prisma migrate deploy"
   },
   "keywords": [],
   "author": "",
