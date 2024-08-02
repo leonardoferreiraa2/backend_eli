@@ -49,7 +49,8 @@ app.get("/salas", async () => {
     // Substitua pelo formato de URL desejado
     ...sala
   }));
-  return { salasGet };
+  const parseSalas = salasGet.map(({ dataCriacao, ...sala }) => sala);
+  return { parseSalas };
 });
 app.get("/salas/:id", async (request, reply) => {
   const { id } = request.params;

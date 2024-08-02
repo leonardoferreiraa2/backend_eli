@@ -33,7 +33,9 @@ app.get('/salas', async () => {
     ...sala
   }));
   
-  return { salasGet };
+  const parseSalas = salasGet.map(({ dataCriacao, ...sala }) => sala);
+
+  return { parseSalas };
 });
 
 // Endpoint para obter uma sala específica
