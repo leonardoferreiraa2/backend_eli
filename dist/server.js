@@ -63,7 +63,7 @@ app.post("/salas", async (request, reply) => {
     urlFoto,
     urlVideo
   } = createSalaSchema.parse(request.body);
-  await prisma.sala.create({
+  const newSala = await prisma.sala.create({
     data: {
       titulo,
       texto,
@@ -72,7 +72,7 @@ app.post("/salas", async (request, reply) => {
       urlVideo
     }
   });
-  return reply.status(201).send();
+  return reply.status(201).send({ newSala });
 });
 app.listen({
   host: "0.0.0.0",
