@@ -77,7 +77,7 @@ app.post('/salas', async (request, reply) => {
   });
 
   const parseSala = {
-    urlSite: urlFront + '/' + newSala.id,
+    urlSala: urlFront + '/' + newSala.id,
     id: newSala.id,
     titulo: newSala.titulo,
     texto: newSala.texto,
@@ -134,7 +134,7 @@ app.put('/salas/update/:id', async (request, reply) => {
     });
 
   const parseSala = {
-      urlSite: urlFront + '/' + updatedSala.id,
+      urlSala: urlFront + '/' + updatedSala.id,
       id: updatedSala.id,
       titulo: updatedSala.titulo,
       texto: updatedSala.texto,
