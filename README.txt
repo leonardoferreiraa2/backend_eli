@@ -1,3 +1,10 @@
+###### SOBRE DEPLOY
+
+- basta rodar npm run build no terminal e subir as os arquivos para o github 
+que e o deploys será feito automaticamente, tanto para o back, quanto para o front end
+
+- nao precisa criar as variáveis .env no ambiente de desenvolvimeto
+
 ###### PARA GERAR NOVO PDF QRCODE
     navegue até esse caminho: 
         cd backend_eli
@@ -25,7 +32,7 @@ PERMITINDO A GERAÇÃO DOS QRCODES E A LOCALIZAÇÃO FUTURA PARA CRIAR OU EDITAR
     body json: 
         {
             "titulo": "Escadaria Queimado",
-            "texto": "A escadaria é o fio que interliga todos os espaços do Centro Cultural Eliziário Rangel, por isso é batizada de Queimado, revolta que orienta todos os nomes dos outros espaços e a missão da nossa instituição.",
+            "texto": "A escadaria é o fio que interliga todos os espaços do ",
             "urlFoto": "https://i.ibb.co/nRzyxsK/escadaria-queimado.png",
             "urlVideo": "",
             "urlAudio": ""
@@ -36,7 +43,7 @@ PERMITINDO A GERAÇÃO DOS QRCODES E A LOCALIZAÇÃO FUTURA PARA CRIAR OU EDITAR
     body json: 
         {
             "titulo": "Escadaria Queimado",
-            "texto": "A escadaria é o fio que interliga todos os espaços do Centro Cultural Eliziário Rangel, por isso é batizada de Queimado, revolta que orienta todos os nomes dos outros espaços e a missão da nossa instituição.",
+            "texto": "A escadaria é o fio que interliga todos os espaços do ",
             "urlFoto": "https://i.ibb.co/nRzyxsK/escadaria-queimado.png",
             "urlVideo": "",
             "urlAudio": ""
