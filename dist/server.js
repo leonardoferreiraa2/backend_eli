@@ -26,20 +26,12 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 var import_fastify = __toESM(require("fastify"));
 var import_client = require("@prisma/client");
 var import_zod = require("zod");
+var import_cors = __toESM(require("@fastify/cors"));
 var app = (0, import_fastify.default)();
-app.addHook("preHandler", (req, res, done) => {
-  const allowedPaths = ["/salas"];
-  if (allowedPaths.includes(req.routerPath)) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", "POST");
-    res.header("Access-Control-Allow-Methods", "GET");
-    res.header("Access-Control-Allow-Headers", "*");
-  }
-  const isPreflight = /options/i.test(req.method);
-  if (isPreflight) {
-    return res.send();
-  }
-  done();
+app.register(import_cors.default, {
+  origin: ["http://localhost:3000", "exam.com"],
+  methods: ["GET", "POST"],
+  credentials: true
 });
 var prisma = new import_client.PrismaClient();
 app.get("/salas", async () => {
