@@ -7,7 +7,7 @@ const app = Fastify();
 
 // Enable CORS
 app.register(cors, {
-    origin: ["http://localhost:3000", "https://frontend-salas.vercel.app/"],
+    origin: ["https://frontend-salas.vercel.app", "http://localhost:3000"],
     methods: ['GET', 'POST'],
     credentials: true
 })

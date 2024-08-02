@@ -29,7 +29,7 @@ var import_zod = require("zod");
 var import_cors = __toESM(require("@fastify/cors"));
 var app = (0, import_fastify.default)();
 app.register(import_cors.default, {
-  origin: ["http://localhost:3000", "https://frontend-salas.vercel.app/"],
+  origin: ["https://frontend-salas.vercel.app", "http://localhost:3000"],
   methods: ["GET", "POST"],
   credentials: true
 });
