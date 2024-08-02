@@ -67,9 +67,8 @@ app.post('/salas', async (request, reply) => {
 });
 
 // Endpoint para obter uma sala específica
-app.get('/salas/delete/:id', async (request, reply) => {
+app.delete('/salas/delete/:id', async (request, reply) => {
   const { id } = request.params as { id: string };
-
   const sala = await prisma.sala.findUnique({
     where: { id },
   });

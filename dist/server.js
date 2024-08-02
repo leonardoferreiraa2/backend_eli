@@ -74,7 +74,7 @@ app.post("/salas", async (request, reply) => {
   });
   return reply.status(201).send({ newSala });
 });
-app.get("/salas/delete/:id", async (request, reply) => {
+app.delete("/salas/delete/:id", async (request, reply) => {
   const { id } = request.params;
   const sala = await prisma.sala.findUnique({
     where: { id }
