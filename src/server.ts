@@ -1,25 +1,15 @@
 import Fastify from 'fastify';
 import { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
+import cors from '@fastify/cors';
 
 const app = Fastify();
-app.addHook('preHandler', (req, res, done) => {
 
-// example logic for conditionally adding headers
-const allowedPaths = ["/salas"];
-    if (allowedPaths.includes(req.routerPath)) {
-        res.header("Access-Control-Allow-Origin", "*");
-        res.header("Access-Control-Allow-Methods", "POST");
-        res.header("Access-Control-Allow-Methods", "GET");
-        res.header("Access-Control-Allow-Headers",  "*");
-    }
-
-    const isPreflight = /options/i.test(req.method);
-    if (isPreflight) {
-        return res.send();
-    }
-        
-    done();
+// Enable CORS
+app.register(cors, {
+    origin: ["http://localhost:3000", "exam.com"],
+    methods: ['GET', 'POST'],
+    credentials: true
 })
 
 // Inicializa o Prisma Client
