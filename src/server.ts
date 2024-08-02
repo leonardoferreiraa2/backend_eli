@@ -28,12 +28,12 @@ const prisma = new PrismaClient();
 // Endpoint para listar todas as salas
 app.get('/salas', async () => {
   const salas = await prisma.sala.findMany();
-  const salasComUrl = salas.map(sala => ({
-    ...sala,
-    urlSala: `${urlFront}/${sala.id}`  // Substitua pelo formato de URL desejado
+  const salasGet = salas.map(sala => ({
+    urlSala: `${urlFront}/${sala.id}`,  // Substitua pelo formato de URL desejado
+    ...sala
   }));
   
-  return { salasComUrl };
+  return { salasGet };
 });
 
 // Endpoint para obter uma sala específica

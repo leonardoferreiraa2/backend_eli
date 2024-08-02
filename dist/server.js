@@ -44,12 +44,12 @@ app.register(import_cors.default, {
 var prisma = new import_client.PrismaClient();
 app.get("/salas", async () => {
   const salas = await prisma.sala.findMany();
-  const salasComUrl = salas.map((sala) => ({
-    ...sala,
-    urlSala: `${urlFront}/${sala.id}`
+  const salasGet = salas.map((sala) => ({
+    urlSala: `${urlFront}/${sala.id}`,
     // Substitua pelo formato de URL desejado
+    ...sala
   }));
-  return { salasComUrl };
+  return { salasGet };
 });
 app.get("/salas/:id", async (request, reply) => {
   const { id } = request.params;
