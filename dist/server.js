@@ -23,10 +23,24 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 ));
 
 // src/server.ts
-var import_client = require("@prisma/client");
 var import_fastify = __toESM(require("fastify"));
+var import_client = require("@prisma/client");
 var import_zod = require("zod");
 var app = (0, import_fastify.default)();
+app.addHook("preHandler", (req, res, done) => {
+  const allowedPaths = ["/salas"];
+  if (allowedPaths.includes(req.routerPath)) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "POST");
+    res.header("Access-Control-Allow-Methods", "GET");
+    res.header("Access-Control-Allow-Headers", "*");
+  }
+  const isPreflight = /options/i.test(req.method);
+  if (isPreflight) {
+    return res.send();
+  }
+  done();
+});
 var prisma = new import_client.PrismaClient();
 app.get("/salas", async () => {
   const salas = await prisma.sala.findMany();
@@ -70,7 +84,11 @@ app.post("/salas", async (request, reply) => {
 });
 app.listen({
   host: "0.0.0.0",
-  port: Number(process.env.PORT)
-}).then(() => {
-  console.log("Server runing");
+  port: Number(process.env.PORT) || 3001
+}, (err, address) => {
+  if (err) {
+    console.error(err);
+    process.exit(1);
+  }
+  console.log(`Server running at ${address}`);
 });
