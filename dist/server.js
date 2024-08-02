@@ -35,8 +35,9 @@ var createSalaSchema = import_zod.z.object({
   urlFoto: import_zod.z.string(),
   urlVideo: import_zod.z.string()
 });
+var urlFront = "https://frontend-salas.vercel.app";
 app.register(import_cors.default, {
-  origin: ["https://frontend-salas.vercel.app"],
+  origin: [urlFront],
   methods: ["GET", "POST", "DELETE", "UPDATE"],
   credentials: true
 });
@@ -80,7 +81,16 @@ app.post("/salas", async (request, reply) => {
       urlVideo
     }
   });
-  return reply.status(201).send({ newSala });
+  const parseSala = {
+    urlSite: urlFront + "/" + newSala.id,
+    id: newSala.id,
+    titulo: newSala.titulo,
+    texto: newSala.texto,
+    urlFoto: newSala.urlFoto,
+    urlAudio: newSala.urlAudio,
+    urlVideo: newSala.urlVideo
+  };
+  return reply.status(201).send({ parseSala });
 });
 app.put("/salas/update/:id", async (request, reply) => {
   const { id } = request.params;
@@ -119,7 +129,16 @@ app.put("/salas/update/:id", async (request, reply) => {
       urlVideo
     }
   });
-  return reply.status(200).send({ updatedSala });
+  const parseSala = {
+    urlSite: urlFront + "/" + updatedSala.id,
+    id: updatedSala.id,
+    titulo: updatedSala.titulo,
+    texto: updatedSala.texto,
+    urlFoto: updatedSala.urlFoto,
+    urlAudio: updatedSala.urlAudio,
+    urlVideo: updatedSala.urlVideo
+  };
+  return reply.status(200).send({ parseSala });
 });
 app.delete("/salas/delete/:id", async (request, reply) => {
   const { id } = request.params;

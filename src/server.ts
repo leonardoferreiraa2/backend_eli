@@ -13,9 +13,11 @@ const createSalaSchema = z.object({
   urlVideo: z.string(),
 });
 
+const urlFront = "https://frontend-salas.vercel.app"
+
 // Enable CORS
 app.register(cors, {
-    origin: ["https://frontend-salas.vercel.app"],
+    origin: [urlFront],
     methods: ['GET', 'POST', 'DELETE', 'UPDATE'],
     credentials: true
 })
@@ -74,7 +76,17 @@ app.post('/salas', async (request, reply) => {
     },
   });
 
-  return reply.status(201).send({ newSala });
+  const parseSala = {
+    urlSite: urlFront + '/' + newSala.id,
+    id: newSala.id,
+    titulo: newSala.titulo,
+    texto: newSala.texto,
+    urlFoto: newSala.urlFoto,
+    urlAudio: newSala.urlAudio,
+    urlVideo: newSala.urlVideo,
+  }
+
+  return reply.status(201).send({ parseSala });
 });
 
 // Endpoint para atualizar uma sala específica
@@ -121,7 +133,17 @@ app.put('/salas/update/:id', async (request, reply) => {
       },
     });
 
-  return reply.status(200).send({ updatedSala });
+  const parseSala = {
+      urlSite: urlFront + '/' + updatedSala.id,
+      id: updatedSala.id,
+      titulo: updatedSala.titulo,
+      texto: updatedSala.texto,
+      urlFoto: updatedSala.urlFoto,
+      urlAudio: updatedSala.urlAudio,
+      urlVideo: updatedSala.urlVideo,
+    }
+
+  return reply.status(200).send({ parseSala });
 });
 
 // Endpoint para deletar uma sala específica
