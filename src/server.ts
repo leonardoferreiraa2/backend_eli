@@ -5,6 +5,14 @@ import cors from '@fastify/cors';
 
 const app = Fastify();
 
+const createSalaSchema = z.object({
+  titulo: z.string(),
+  texto: z.string(),
+  urlAudio: z.string(),
+  urlFoto: z.string(),
+  urlVideo: z.string(),
+});
+
 // Enable CORS
 app.register(cors, {
     origin: ["https://frontend-salas.vercel.app"],
@@ -37,14 +45,6 @@ app.get('/salas/:id', async (request, reply) => {
 
 // Endpoint para criar uma nova sala
 app.post('/salas', async (request, reply) => {
-  const createSalaSchema = z.object({
-    titulo: z.string(),
-    texto: z.string(),
-    urlAudio: z.string(),
-    urlFoto: z.string(),
-    urlVideo: z.string(),
-  });
-
   const {
     titulo,
     texto,
@@ -83,6 +83,39 @@ app.delete('/salas/delete/:id', async (request, reply) => {
   });
 
   return reply.status(201).send({ message: "Sala deletada com sucesso!" });;
+});
+
+// Endpoint para obter uma sala específica
+app.put('/salas/update/:id', async (request, reply) => {
+  const { id } = request.params as { id: string };
+  const sala = await prisma.sala.findUnique({
+    where: { id },
+  });
+
+  if (!sala) {
+    return reply.status(404).send({ error: `id not found: ${id}` });
+  }
+
+  const {
+    titulo,
+    texto,
+    urlAudio,
+    urlFoto,
+    urlVideo,
+  } = createSalaSchema.parse(request.body);
+
+  const updatedSala = await prisma.sala.update({
+      where: { id },
+      data: {
+        titulo,
+        texto,
+        urlAudio,
+        urlFoto,
+        urlVideo,
+      },
+    });
+
+  return reply.status(200).send({ updatedSala });
 });
 
 // Inicia o servidor

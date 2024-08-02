@@ -28,6 +28,13 @@ var import_client = require("@prisma/client");
 var import_zod = require("zod");
 var import_cors = __toESM(require("@fastify/cors"));
 var app = (0, import_fastify.default)();
+var createSalaSchema = import_zod.z.object({
+  titulo: import_zod.z.string(),
+  texto: import_zod.z.string(),
+  urlAudio: import_zod.z.string(),
+  urlFoto: import_zod.z.string(),
+  urlVideo: import_zod.z.string()
+});
 app.register(import_cors.default, {
   origin: ["https://frontend-salas.vercel.app"],
   methods: ["GET", "POST", "DELETE", "UPDATE"],
@@ -49,13 +56,6 @@ app.get("/salas/:id", async (request, reply) => {
   return { sala };
 });
 app.post("/salas", async (request, reply) => {
-  const createSalaSchema = import_zod.z.object({
-    titulo: import_zod.z.string(),
-    texto: import_zod.z.string(),
-    urlAudio: import_zod.z.string(),
-    urlFoto: import_zod.z.string(),
-    urlVideo: import_zod.z.string()
-  });
   const {
     titulo,
     texto,
@@ -87,6 +87,33 @@ app.delete("/salas/delete/:id", async (request, reply) => {
   });
   return reply.status(201).send({ message: "Sala deletada com sucesso!" });
   ;
+});
+app.put("/salas/update/:id", async (request, reply) => {
+  const { id } = request.params;
+  const sala = await prisma.sala.findUnique({
+    where: { id }
+  });
+  if (!sala) {
+    return reply.status(404).send({ error: `id not found: ${id}` });
+  }
+  const {
+    titulo,
+    texto,
+    urlAudio,
+    urlFoto,
+    urlVideo
+  } = createSalaSchema.parse(request.body);
+  const updatedSala = await prisma.sala.update({
+    where: { id },
+    data: {
+      titulo,
+      texto,
+      urlAudio,
+      urlFoto,
+      urlVideo
+    }
+  });
+  return reply.status(200).send({ updatedSala });
 });
 app.listen({
   host: "0.0.0.0",
