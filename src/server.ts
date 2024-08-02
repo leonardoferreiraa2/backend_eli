@@ -7,7 +7,7 @@ const app = Fastify();
 
 // Enable CORS
 app.register(cors, {
-    origin: ["http://localhost:3000", "exam.com"],
+    origin: ["http://localhost:3000"],
     methods: ['GET', 'POST'],
     credentials: true
 })
