@@ -30,7 +30,7 @@ var import_cors = __toESM(require("@fastify/cors"));
 var app = (0, import_fastify.default)();
 app.register(import_cors.default, {
   origin: ["https://frontend-salas.vercel.app"],
-  methods: ["GET", "POST"],
+  methods: ["GET", "POST", "DELETE", "UPDATE"],
   credentials: true
 });
 var prisma = new import_client.PrismaClient();
@@ -73,6 +73,20 @@ app.post("/salas", async (request, reply) => {
     }
   });
   return reply.status(201).send({ newSala });
+});
+app.get("/salas/delete/:id", async (request, reply) => {
+  const { id } = request.params;
+  const sala = await prisma.sala.findUnique({
+    where: { id }
+  });
+  if (!sala) {
+    return reply.status(404).send({ error: `id not found: ${id}` });
+  }
+  await prisma.sala.delete({
+    where: { id }
+  });
+  return reply.status(201).send({ message: "Sala deletada com sucesso!" });
+  ;
 });
 app.listen({
   host: "0.0.0.0",

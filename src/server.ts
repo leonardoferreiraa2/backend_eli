@@ -8,7 +8,7 @@ const app = Fastify();
 // Enable CORS
 app.register(cors, {
     origin: ["https://frontend-salas.vercel.app"],
-    methods: ['GET', 'POST'],
+    methods: ['GET', 'POST', 'DELETE', 'UPDATE'],
     credentials: true
 })
 
@@ -64,6 +64,26 @@ app.post('/salas', async (request, reply) => {
   });
 
   return reply.status(201).send({ newSala });
+});
+
+// Endpoint para obter uma sala específica
+app.get('/salas/delete/:id', async (request, reply) => {
+  const { id } = request.params as { id: string };
+
+  const sala = await prisma.sala.findUnique({
+    where: { id },
+  });
+
+  if (!sala) {
+    return reply.status(404).send({ error: `id not found: ${id}` });
+  }
+
+  // Delete a sala
+  await prisma.sala.delete({
+      where: { id: id },
+  });
+
+  return reply.status(201).send({ message: "Sala deletada com sucesso!" });;
 });
 
 // Inicia o servidor
