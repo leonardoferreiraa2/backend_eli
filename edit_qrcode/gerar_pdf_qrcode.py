@@ -1,6 +1,7 @@
 import json
 import qrcode
 from PIL import Image, ImageDraw, ImageFont
+from docx import Document
 
 # Função para carregar dados JSON de um arquivo externo
 def load_json_data(file_path):
@@ -29,8 +30,10 @@ try:
     font_path = "C:/Windows/Fonts/arialbd.ttf"
     font_size = 60
     font = ImageFont.truetype(font_path, font_size)
+    small_font = ImageFont.truetype(font_path, 40)  # Fonte menor para o URL
 except IOError:
     font = ImageFont.load_default()
+    small_font = ImageFont.load_default()
     print("Fonte não encontrada. Usando fonte padrão.")
 
 # Função para gerar um QR code
@@ -65,6 +68,27 @@ def wrap_text(text, font, max_width):
         lines.append(line)
     return lines
 
+# Gerar o arquivo Word
+def generate_word_document(data_list):
+    doc = Document()
+    doc.add_heading('Dados das Salas', level=1)
+
+    for item in data_list:
+        # Adicionar título da sala
+        doc.add_heading(item.get('titulo', 'Sem Título'), level=2)
+        
+        # Adicionar dados da sala, excluindo urlaudio e urlvideo
+        data_to_include = {k: v for k, v in item.items() if k not in ['urlaudio', 'urlvideo']}
+        for key, value in data_to_include.items():
+            doc.add_paragraph(f'{key}: {value}')
+
+        doc.add_paragraph()  # Adicionar uma linha em branco entre as salas
+
+    # Salvar o documento Word
+    word_path = './Dados_Salas.docx'
+    doc.save(word_path)
+    print(f"Documento Word salvo com sucesso!")
+
 # Lista para armazenar as páginas do PDF
 pdf_pages = []
 
@@ -94,7 +118,7 @@ for i in range(0, len(data_list), 2):
 
         # Desenhar o título no template acima da área branca
         title = item['titulo']
-        max_title_width = template.width - 40  # Largura máxima para o título
+        max_title_width = template.width - 150  # Largura máxima para o título
         lines = wrap_text(title, font, max_title_width)
 
         # Desenhar cada linha do título
@@ -105,7 +129,15 @@ for i in range(0, len(data_list), 2):
             title_x = x + int((template.width - title_width) / 2)
             draw.text((title_x, current_y), line, font=font, fill=(40, 40, 40))  # Cor mais escura
             current_y += title_bbox[3] - title_bbox[1] + 10  # Ajustar o espaçamento entre linhas
-
+        
+        # Adicionar o URL abaixo do QR code
+        url_text = item['urlSala']
+        url_bbox = draw.textbbox((0, 0, a4_width_px, a4_height_px), url_text, font=small_font)
+        url_width = url_bbox[2] - url_bbox[0]
+        url_x = x + int((template.width - url_width) / 2)
+        url_y = qr_y + qr_area_height + 250  # Espaçamento entre QR code e URL
+        draw.text((url_x, url_y), url_text, font=small_font, fill=(0, 0, 0))  # Texto preto
+        
     # Adicionar a imagem A4 à lista de páginas do PDF
     pdf_pages.append(a4_image)
 
@@ -114,3 +146,6 @@ pdf_path = './QRCode_Salas_CCER.pdf'
 pdf_pages[0].save(pdf_path, save_all=True, append_images=pdf_pages[1:], resolution=100.0, quality=95)
 
 print(f"PDF salvo com sucesso!")
+
+# Gerar o documento Word com os dados das salas
+generate_word_document(data_list)

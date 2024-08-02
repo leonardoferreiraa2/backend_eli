@@ -10,6 +10,9 @@ que e o deploys será feito automaticamente, tanto para o back, quanto para o fr
 - as imagens estão sendo salvas na minha conta, através desse link: https://ibb.co/album/V26J6n
 mas, isso pode ser alterado, so tem que editar todos os registros com os novos links das imagens
 
+- converti online as imagens em png e usei esse site para comprimi-lás: 
+https://www.iloveimg.com/pt/comprimir-imagem
+
 
 ###### PARA GERAR NOVO PDF QRCODE
     navegue até esse caminho: 
