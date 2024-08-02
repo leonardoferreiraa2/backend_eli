@@ -63,6 +63,14 @@ app.post("/salas", async (request, reply) => {
     urlFoto,
     urlVideo
   } = createSalaSchema.parse(request.body);
+  const conflictingSala = await prisma.sala.findFirst({
+    where: {
+      titulo
+    }
+  });
+  if (conflictingSala) {
+    return reply.status(400).send({ error: `J\xE1 existe uma sala com o t\xEDtulo: ${titulo}` });
+  }
   const newSala = await prisma.sala.create({
     data: {
       titulo,
@@ -73,20 +81,6 @@ app.post("/salas", async (request, reply) => {
     }
   });
   return reply.status(201).send({ newSala });
-});
-app.delete("/salas/delete/:id", async (request, reply) => {
-  const { id } = request.params;
-  const sala = await prisma.sala.findUnique({
-    where: { id }
-  });
-  if (!sala) {
-    return reply.status(404).send({ error: `id not found: ${id}` });
-  }
-  await prisma.sala.delete({
-    where: { id }
-  });
-  return reply.status(201).send({ message: "Sala deletada com sucesso!" });
-  ;
 });
 app.put("/salas/update/:id", async (request, reply) => {
   const { id } = request.params;
@@ -103,6 +97,18 @@ app.put("/salas/update/:id", async (request, reply) => {
     urlFoto,
     urlVideo
   } = createSalaSchema.parse(request.body);
+  const conflictingSala = await prisma.sala.findFirst({
+    where: {
+      titulo,
+      NOT: {
+        id
+        // Exclui a sala que está sendo atualizada da busca
+      }
+    }
+  });
+  if (conflictingSala) {
+    return reply.status(400).send({ error: `J\xE1 existe uma sala com o t\xEDtulo: ${titulo}` });
+  }
   const updatedSala = await prisma.sala.update({
     where: { id },
     data: {
@@ -114,6 +120,20 @@ app.put("/salas/update/:id", async (request, reply) => {
     }
   });
   return reply.status(200).send({ updatedSala });
+});
+app.delete("/salas/delete/:id", async (request, reply) => {
+  const { id } = request.params;
+  const sala = await prisma.sala.findUnique({
+    where: { id }
+  });
+  if (!sala) {
+    return reply.status(404).send({ error: `id not found: ${id}` });
+  }
+  await prisma.sala.delete({
+    where: { id }
+  });
+  return reply.status(201).send({ message: "Sala deletada com sucesso!" });
+  ;
 });
 app.listen({
   host: "0.0.0.0",

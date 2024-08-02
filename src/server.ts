@@ -53,6 +53,17 @@ app.post('/salas', async (request, reply) => {
     urlVideo,
   } = createSalaSchema.parse(request.body);
 
+  // Verifica se outro registro com o mesmo título já existe
+  const conflictingSala = await prisma.sala.findFirst({
+    where: {
+      titulo: titulo,
+    },
+  });
+
+  if (conflictingSala) {
+    return reply.status(400).send({ error: `Já existe uma sala com o título: ${titulo}` });
+  }
+
   const newSala = await prisma.sala.create({
     data: {
       titulo,
@@ -66,26 +77,7 @@ app.post('/salas', async (request, reply) => {
   return reply.status(201).send({ newSala });
 });
 
-// Endpoint para obter uma sala específica
-app.delete('/salas/delete/:id', async (request, reply) => {
-  const { id } = request.params as { id: string };
-  const sala = await prisma.sala.findUnique({
-    where: { id },
-  });
-
-  if (!sala) {
-    return reply.status(404).send({ error: `id not found: ${id}` });
-  }
-
-  // Delete a sala
-  await prisma.sala.delete({
-      where: { id: id },
-  });
-
-  return reply.status(201).send({ message: "Sala deletada com sucesso!" });;
-});
-
-// Endpoint para obter uma sala específica
+// Endpoint para atualizar uma sala específica
 app.put('/salas/update/:id', async (request, reply) => {
   const { id } = request.params as { id: string };
   const sala = await prisma.sala.findUnique({
@@ -104,6 +96,20 @@ app.put('/salas/update/:id', async (request, reply) => {
     urlVideo,
   } = createSalaSchema.parse(request.body);
 
+  // Verifica se outro registro com o mesmo título já existe
+  const conflictingSala = await prisma.sala.findFirst({
+    where: {
+      titulo: titulo,
+      NOT: {
+        id: id, // Exclui a sala que está sendo atualizada da busca
+      },
+    },
+  });
+
+  if (conflictingSala) {
+    return reply.status(400).send({ error: `Já existe uma sala com o título: ${titulo}` });
+  }
+
   const updatedSala = await prisma.sala.update({
       where: { id },
       data: {
@@ -116,6 +122,25 @@ app.put('/salas/update/:id', async (request, reply) => {
     });
 
   return reply.status(200).send({ updatedSala });
+});
+
+// Endpoint para deletar uma sala específica
+app.delete('/salas/delete/:id', async (request, reply) => {
+  const { id } = request.params as { id: string };
+  const sala = await prisma.sala.findUnique({
+    where: { id },
+  });
+
+  if (!sala) {
+    return reply.status(404).send({ error: `id not found: ${id}` });
+  }
+
+  // Delete a sala
+  await prisma.sala.delete({
+      where: { id: id },
+  });
+
+  return reply.status(201).send({ message: "Sala deletada com sucesso!" });;
 });
 
 // Inicia o servidor
